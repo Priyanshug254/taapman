@@ -21,85 +21,34 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useToast } from "@/hooks/use-toast"
-import { Toaster } from "@/components/ui/toaster"
 
-// Mock weather data - in production this would come from OpenWeatherMap API
-const mockWeatherData = {
-  "new york": {
-    city: "New York",
-    country: "US",
-    temp: 22,
-    feelsLike: 20,
-    condition: "Clear",
-    humidity: 65,
-    windSpeed: 12,
-    visibility: 10,
-    pressure: 1013,
-    sunrise: "06:30",
-    sunset: "19:45",
-    forecast: [
-      { day: "Mon", condition: "Clear", minTemp: 18, maxTemp: 25 },
-      { day: "Tue", condition: "Cloudy", minTemp: 17, maxTemp: 23 },
-      { day: "Wed", condition: "Rainy", minTemp: 15, maxTemp: 20 },
-      { day: "Thu", condition: "Clear", minTemp: 19, maxTemp: 26 },
-      { day: "Fri", condition: "Clear", minTemp: 20, maxTemp: 27 },
-    ],
-  },
-  london: {
-    city: "London",
-    country: "GB",
-    temp: 15,
-    feelsLike: 13,
-    condition: "Cloudy",
-    humidity: 78,
-    windSpeed: 18,
-    visibility: 8,
-    pressure: 1008,
-    sunrise: "05:45",
-    sunset: "20:30",
-    forecast: [
-      { day: "Mon", condition: "Cloudy", minTemp: 12, maxTemp: 17 },
-      { day: "Tue", condition: "Rainy", minTemp: 11, maxTemp: 15 },
-      { day: "Wed", condition: "Cloudy", minTemp: 10, maxTemp: 16 },
-      { day: "Thu", condition: "Clear", minTemp: 13, maxTemp: 18 },
-      { day: "Fri", condition: "Clear", minTemp: 14, maxTemp: 19 },
-    ],
-  },
-  tokyo: {
-    city: "Tokyo",
-    country: "JP",
-    temp: 28,
-    feelsLike: 31,
-    condition: "Clear",
-    humidity: 70,
-    windSpeed: 8,
-    visibility: 10,
-    pressure: 1015,
-    sunrise: "04:50",
-    sunset: "18:55",
-    forecast: [
-      { day: "Mon", condition: "Clear", minTemp: 24, maxTemp: 30 },
-      { day: "Tue", condition: "Clear", minTemp: 25, maxTemp: 31 },
-      { day: "Wed", condition: "Cloudy", minTemp: 23, maxTemp: 28 },
-      { day: "Thu", condition: "Rainy", minTemp: 21, maxTemp: 26 },
-      { day: "Fri", condition: "Cloudy", minTemp: 22, maxTemp: 27 },
-    ],
-  },
+
+// Helper to map WMO codes to conditions
+const mapWeatherCode = (code: number): string => {
+  if (code === 0) return "Clear"
+  if (code === 1 || code === 2 || code === 3) return "Cloudy"
+  if (code >= 45 && code <= 48) return "Cloudy"
+  if (code >= 51 && code <= 67) return "Rainy"
+  if (code >= 71 && code <= 77) return "Snowy"
+  if (code >= 80 && code <= 82) return "Rainy"
+  if (code >= 85 && code <= 86) return "Snowy"
+  if (code >= 95 && code <= 99) return "Rainy"
+  return "Clear"
 }
 
 const getWeatherIcon = (condition: string, size = 24) => {
   const className = `h-${size} w-${size}`
   switch (condition.toLowerCase()) {
     case "clear":
-      return <Sun className={`h-${size} w-${size}`} />
+      return <Sun className={className} />
     case "cloudy":
-      return <Cloud className={`h-${size} w-${size}`} />
+      return <Cloud className={className} />
     case "rainy":
-      return <CloudRain className={`h-${size} w-${size}`} />
+      return <CloudRain className={className} />
     case "snowy":
-      return <CloudSnow className={`h-${size} w-${size}`} />
+      return <CloudSnow className={className} />
     default:
-      return <Sun className={`h-${size} w-${size}`} />
+      return <Sun className={className} />
   }
 }
 
@@ -108,6 +57,55 @@ export default function Home() {
   const [weather, setWeather] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
+
+  const fetchWeatherData = async (lat: number, lon: number, cityName: string, countryCode?: string) => {
+    try {
+      // Fetch weather data from Open-Meteo
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto`
+      )
+
+      if (!response.ok) throw new Error("Failed to fetch weather data")
+
+      const data = await response.json()
+
+      // Format 5-day forecast
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+      const forecast = data.daily.time.slice(0, 5).map((dateStr: string, index: number) => {
+        const date = new Date(dateStr)
+        return {
+          day: days[date.getDay()],
+          condition: mapWeatherCode(data.daily.weather_code[index]),
+          minTemp: Math.round(data.daily.temperature_2m_min[index]),
+          maxTemp: Math.round(data.daily.temperature_2m_max[index])
+        }
+      })
+
+      // Format current weather to match our UI requirements
+      setWeather({
+        city: cityName,
+        country: countryCode || "",
+        temp: Math.round(data.current.temperature_2m),
+        feelsLike: Math.round(data.current.apparent_temperature),
+        condition: mapWeatherCode(data.current.weather_code),
+        humidity: data.current.relative_humidity_2m,
+        windSpeed: Math.round(data.current.wind_speed_10m),
+        visibility: 10, // Open-Meteo basic free tier doesn't always have visibility easily, defaulting to 10
+        pressure: Math.round(data.current.surface_pressure),
+        sunrise: new Date(data.daily.sunrise[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        sunset: new Date(data.daily.sunset[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        forecast: forecast
+      })
+
+    } catch (error) {
+      console.error(error)
+      toast({
+        title: "Error",
+        description: "Failed to load weather data. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
 
   const handleSearch = async () => {
     if (!location.trim()) {
@@ -120,38 +118,89 @@ export default function Home() {
     }
 
     setLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      // 1. Geocoding
+      const geoResponse = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`
+      )
+      const geoData = await geoResponse.json()
 
-    const weatherData = mockWeatherData[location.toLowerCase().trim()]
-    if (weatherData) {
-      setWeather(weatherData)
-    } else {
+      if (!geoData.results || geoData.results.length === 0) {
+        toast({
+          title: "City not found",
+          description: "Please check the spelling and try again.",
+          variant: "destructive",
+        })
+        setLoading(false)
+        return
+      }
+
+      const { latitude, longitude, name, country_code } = geoData.results[0]
+
+      // 2. Fetch Weather
+      await fetchWeatherData(latitude, longitude, name, country_code)
+
+    } catch (error) {
+      console.error(error)
       toast({
-        title: "City not found",
-        description: "Try searching for New York, London, or Tokyo",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       })
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
-  const handleUseLocation = async () => {
+  const handleUseLocation = () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "Error",
+        description: "Geolocation is not supported by your browser",
+        variant: "destructive",
+      })
+      return
+    }
+
     setLoading(true)
     toast({
       title: "Getting your location...",
-      description: "This may take a moment",
+      description: "Please allow location access if prompted",
     })
 
-    // Simulate getting location and weather data
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setWeather(mockWeatherData["new york"])
-    setLoading(false)
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords
+
+        try {
+          // Reverse geocoding to get city name
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+          )
+          const data = await response.json()
+
+          await fetchWeatherData(latitude, longitude, data.city || data.locality || "Unknown Location", data.countryCode)
+        } catch (error) {
+          // Fallback if reverse geocoding fails but we have coords
+          await fetchWeatherData(latitude, longitude, "Your Location")
+        } finally {
+          setLoading(false)
+        }
+      },
+      (error) => {
+        console.error(error)
+        toast({
+          title: "Location Error",
+          description: "Unable to retrieve your location. Please check permissions.",
+          variant: "destructive",
+        })
+        setLoading(false)
+      }
+    )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-cyan-100 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 transition-colors duration-500">
-      <Toaster />
 
       {/* Header */}
       <header className="border-b border-white/20 dark:border-white/10 backdrop-blur-sm bg-white/30 dark:bg-black/20">
@@ -205,7 +254,7 @@ export default function Home() {
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   type="text"
-                  placeholder="Enter city name..."
+                  placeholder="Enter city name... (e.g. London)"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -249,7 +298,7 @@ export default function Home() {
               <div className="text-center space-y-6">
                 <div>
                   <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
-                    {weather.city}, {weather.country}
+                    {weather.city}{weather.country ? `, ${weather.country}` : ''}
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400 mt-2">{weather.condition}</p>
                 </div>
