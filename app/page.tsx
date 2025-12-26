@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useToast } from "@/hooks/use-toast"
+import { OutfitAdvisor } from "@/components/outfit-advisor"
+import { ActivityPlanner } from "@/components/activity-planner"
 
 
 // Helper to map WMO codes to conditions
@@ -94,7 +96,8 @@ export default function Home() {
         pressure: Math.round(data.current.surface_pressure),
         sunrise: new Date(data.daily.sunrise[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         sunset: new Date(data.daily.sunset[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        forecast: forecast
+        forecast: forecast,
+        isDay: data.current.is_day === 1
       })
 
     } catch (error) {
@@ -356,6 +359,12 @@ export default function Home() {
                 </div>
               </div>
             </Card>
+
+            {/* Smart Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <OutfitAdvisor weather={weather} />
+              <ActivityPlanner weather={weather} />
+            </div>
 
             {/* 5-Day Forecast */}
             <div>
