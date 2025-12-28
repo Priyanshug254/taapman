@@ -4,14 +4,10 @@ import { Activity, Bike, Footprints, Tent, Star } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
+import { WeatherData } from "@/types/weather"
+
 interface ActivityPlannerProps {
-    weather: {
-        temp: number
-        condition: string
-        windSpeed: number
-        humidity: number
-        isDay?: boolean
-    }
+    weather: WeatherData
 }
 
 export function ActivityPlanner({ weather }: ActivityPlannerProps) {

@@ -3,13 +3,10 @@
 import { Shirt, Umbrella, Glasses, Snowflake, Wind } from "lucide-react"
 import { Card } from "@/components/ui/card"
 
+import { WeatherData } from "@/types/weather"
+
 interface OutfitAdvisorProps {
-    weather: {
-        temp: number
-        condition: string
-        windSpeed: number
-        isDay?: boolean
-    }
+    weather: WeatherData
 }
 
 export function OutfitAdvisor({ weather }: OutfitAdvisorProps) {

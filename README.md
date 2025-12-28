@@ -2,8 +2,6 @@
 
 Taapman is a modern, feature-rich weather application built with Next.js and Tailwind CSS. It goes beyond simple forecasting by providing lifestyle-oriented insights like outfit suggestions and activity planning based on real-time weather conditions.
 
-![Taapman Screenshot](public/screenshot.png) 
-*(Note: You can add a screenshot here later)*
 
 ## 🌟 Features
 
