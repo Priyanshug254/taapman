@@ -1,72 +1,119 @@
-# Taapman - Smart Weather Forecasting
+# Taapman - Smart Weather Forecasting 🌤️
 
-Taapman is a modern, feature-rich weather application built with Next.js and Tailwind CSS. It goes beyond simple forecasting by providing lifestyle-oriented insights like outfit suggestions and activity planning based on real-time weather conditions.
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
+**Taapman** is a next-generation weather dashboard built for the modern web. Unlike traditional weather apps, Taapman interprets weather data to provide actionable life hacks—telling you what to wear and what activities are best suited for the current conditions.
 
-## 🌟 Features
+![Taapman Screenshot](public/screenshot.png) 
+*(Screenshots coming soon)*
 
--   **Real-time Weather**: Accurate current weather data including temperature, humidity, wind speed, and pressure.
--   **5-Day Forecast**: Plan ahead with a detailed 5-day weather outlook.
--   **👕 Smart Outfit Advisor**: Intelligent clothing suggestions based on temperature, rain, and wind conditions.
--   **🏃 Activity Planner**: Suitability ratings for outdoor activities like Running, Cycling, Camping, and Stargazing.
--   **🌍 Global Search**: Search for weather in any city worldwide.
--   **📍 Auto-Location**: One-click "Use My Location" feature.
--   **dark Mode**: Fully responsive dark mode support for comfortable viewing at night.
+## ✨ Key Features
+
+### 🌡️ Hyper-Local Weather
+-   **Current Conditions**: Real-time temperature, "feels like" temp, humidity, wind, and visibility.
+-   **5-Day Forecast**: Accurate daily predictions to help you plan your week.
+-   **Sunrise/Sunset**: Dynamic tracking of daylight hours.
+
+### 🧠 Smart Lifestyle Engine
+-   **👕 Outfit Advisor**: A rule-based engine that recommends clothing combinations (e.g., "Hoodie + Jeans") based on temperature thresholds and precipitation presence.
+-   **🏃 Activity Planner**: Calculates a 0-100 suitability score for activities like **Running**, **Cycling**, **Camping**, and **Stargazing** by analyzing wind speed, cloud cover, and rain probability.
+
+### 💻 Modern Tech Features
+-   **Global Search**: Instant city lookups via Open-Meteo Geocoding API.
+-   **Auto-Location**: Geo-positioning integration using browser APIs and BigDataCloud reverse geocoding.
+-   **Dark Mode**: Seamless day/night theming with generic system preference detection.
+
+---
+
+## 🏗️ Architecture & Project Structure
+
+The project follows a clean, modular architecture with strict TypeScript typing.
+
+```
+taapman/
+├── app/                  # App Router & Pages
+│   └── page.tsx          # Main Dashboard
+├── components/           # Reusable UI Components
+│   ├── activity-planner.tsx # Activity scoring logic
+│   ├── outfit-advisor.tsx   # Clothing recommendation engine
+│   ├── weather-card.tsx     # Main weather display
+│   ├── weather-icon.tsx     # Dynamic icon renderer
+│   └── ui/               # Shadcn UI primitives
+├── hooks/                # Custom React Hooks
+│   └── use-weather.ts    # Centralized state & fetching logic
+├── lib/                  # Utilities & Helpers
+│   └── weather-utils.ts  # WMO code mapping
+├── types/                # TypeScript Interfaces
+│   └── weather.ts        # Data models
+└── public/               # Static Assets
+```
 
 ## 🛠️ Tech Stack
 
--   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
--   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
--   **Icons**: [Lucide React](https://lucide.dev/)
--   **Components**: [Radix UI](https://www.radix-ui.com/) (via shadcn/ui)
--   **Data Provider**: [Open-Meteo API](https://open-meteo.com/) (No API key required!)
+-   **Frontend**: Next.js 15 (App Router), React 19
+-   **Language**: TypeScript for type safety
+-   **Styling**: Tailwind CSS + Shadcn UI (Radix Primitives)
+-   **Icons**: Lucide React
+-   **Data Sources**:
+    -   [Open-Meteo](https://open-meteo.com/): Weather data
+    -   [BigDataCloud](https://www.bigdatacloud.com/): Reverse geocoding
+
+---
 
 ## 🚀 Getting Started
 
-Follow these steps to run the project locally:
-
 ### Prerequisites
-
--   Node.js 18+ installed
--   npm or pnpm
+-   Node.js 18+
+-   npm, pnpm, or yarn
 
 ### Installation
 
-1.  **Clone the repository**
+1.  **Clone the Repo**
     ```bash
     git clone https://github.com/Priyanshug254/taapman.git
     cd taapman/tapman-weather-app
     ```
 
-2.  **Install dependencies**
+2.  **Install Dependencies**
     ```bash
     npm install
-    # or
-    pnpm install
     ```
 
-3.  **Run the development server**
+3.  **Run Development Server**
     ```bash
     npm run dev
     ```
 
-4.  **Open in Browser**
-    Navigate to [http://localhost:3000](http://localhost:3000) to see the app in action.
+4.  **View App**
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📁 Project Structure
+---
 
--   `app/`: Main application code (App Router).
-    -   `page.tsx`: The main dashboard page.
--   `components/`: Reusable UI components.
-    -   `outfit-advisor.tsx`: Logic for clothing suggestions.
-    -   `activity-planner.tsx`: Logic for activity suitability.
-    -   `ui/`: Base UI components (buttons, cards, etc.).
--   `public/`: Static assets.
+## 🌐 Deployment
+
+This app is optimized for deployment on **Vercel**.
+
+1.  Push your code to a GitHub repository.
+2.  Import the project into Vercel.
+3.  Vercel will automatically detect Next.js and deploy your app.
+
+No environment variables are needed for the base version as it uses free, public APIs.
+
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a pull request.
+We love contributions!
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
 ## 📄 License
 
-This project is open-source and available under the MIT License.
+Distributed under the MIT License. See `LICENSE` for more information.
