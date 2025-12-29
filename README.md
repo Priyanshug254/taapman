@@ -20,6 +20,7 @@
 
 ### 🧠 Smart Lifestyle Engine
 -   **👕 Outfit Advisor**: A rule-based engine that recommends clothing combinations (e.g., "Hoodie + Jeans") based on temperature thresholds and precipitation presence.
+-   **🌻 Garden Guru**: Provides smart gardening advice (e.g., "Water deeply", "Cover from frost") based on rain forecasts, temperature, and wind conditions.
 -   **🏃 Activity Planner**: Calculates a 0-100 suitability score for activities like **Running**, **Cycling**, **Camping**, and **Stargazing** by analyzing wind speed, cloud cover, and rain probability.
 
 ### 💻 Modern Tech Features
@@ -39,6 +40,7 @@ taapman/
 │   └── page.tsx          # Main Dashboard
 ├── components/           # Reusable UI Components
 │   ├── activity-planner.tsx # Activity scoring logic
+│   ├── garden-guru.tsx      # Gardening advice engine
 │   ├── outfit-advisor.tsx   # Clothing recommendation engine
 │   ├── weather-card.tsx     # Main weather display
 │   ├── weather-icon.tsx     # Dynamic icon renderer

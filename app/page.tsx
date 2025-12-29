@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { OutfitAdvisor } from "@/components/outfit-advisor"
 import { ActivityPlanner } from "@/components/activity-planner"
+import { GardenGuru } from "@/components/garden-guru"
 import { WeatherCard } from "@/components/weather-card"
 import { WeatherIcon } from "@/components/weather-icon"
 import { useWeather } from "@/hooks/use-weather"
@@ -97,9 +98,10 @@ export default function Home() {
             <WeatherCard weather={weather} />
 
             {/* Smart Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <OutfitAdvisor weather={weather} />
               <ActivityPlanner weather={weather} />
+              <GardenGuru weather={weather} />
             </div>
 
             {/* 5-Day Forecast */}
