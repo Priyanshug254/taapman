@@ -10,13 +10,15 @@ import { ActivityPlanner } from "@/components/activity-planner"
 import { GardenGuru } from "@/components/garden-guru"
 import { WeatherCard } from "@/components/weather-card"
 import { WeatherIcon } from "@/components/weather-icon"
+import { WeatherBackground } from "@/components/weather-background"
 import { useWeather } from "@/hooks/use-weather"
 
 export default function Home() {
   const { location, setLocation, weather, loading, handleSearch, handleUseLocation } = useWeather()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-cyan-100 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 transition-colors duration-500">
+    <div className="min-h-screen transition-colors duration-500 relative">
+      <WeatherBackground weather={weather} />
 
       {/* Header */}
       <header className="border-b border-white/20 dark:border-white/10 backdrop-blur-sm bg-white/30 dark:bg-black/20">

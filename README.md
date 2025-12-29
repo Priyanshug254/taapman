@@ -22,6 +22,7 @@
 -   **👕 Outfit Advisor**: A rule-based engine that recommends clothing combinations (e.g., "Hoodie + Jeans") based on temperature thresholds and precipitation presence.
 -   **🌻 Garden Guru**: Provides smart gardening advice (e.g., "Water deeply", "Cover from frost") based on rain forecasts, temperature, and wind conditions.
 -   **🏃 Activity Planner**: Calculates a 0-100 suitability score for activities like **Running**, **Cycling**, **Camping**, and **Stargazing** by analyzing wind speed, cloud cover, and rain probability.
+-   **🌈 Dynamic Backgrounds**: Immersive gradients that change in real-time to reflect the weather (Sunny, Rainy, Snowy, Night).
 
 ### 💻 Modern Tech Features
 -   **Global Search**: Instant city lookups via Open-Meteo Geocoding API.
@@ -42,6 +43,7 @@ taapman/
 │   ├── activity-planner.tsx # Activity scoring logic
 │   ├── garden-guru.tsx      # Gardening advice engine
 │   ├── outfit-advisor.tsx   # Clothing recommendation engine
+│   ├── weather-background.tsx # Dynamic background engine
 │   ├── weather-card.tsx     # Main weather display
 │   ├── weather-icon.tsx     # Dynamic icon renderer
 │   └── ui/               # Shadcn UI primitives
