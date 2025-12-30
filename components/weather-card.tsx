@@ -4,6 +4,12 @@ import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check } fro
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { WeatherData } from "@/types/weather"
 import { WeatherIcon } from "@/components/weather-icon"
 import { toast } from "@/hooks/use-toast"
@@ -72,29 +78,59 @@ export function WeatherCard({ weather }: WeatherCardProps) {
 
                 {/* Weather Details Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-200 dark:border-slate-700">
-                    <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40">
-                        <Droplets className="h-6 w-6 text-sky-600 dark:text-sky-400" />
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Humidity</p>
-                        <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.humidity}%</p>
-                    </div>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40 cursor-help hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
+                                    <Droplets className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">Humidity</p>
+                                    <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.humidity}%</p>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Amount of water vapor in the air.</p>
+                            </TooltipContent>
+                        </Tooltip>
 
-                    <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40">
-                        <Wind className="h-6 w-6 text-sky-600 dark:text-sky-400" />
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Wind Speed</p>
-                        <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.windSpeed} km/h</p>
-                    </div>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40 cursor-help hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
+                                    <Wind className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">Wind Speed</p>
+                                    <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.windSpeed} km/h</p>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Speed of wind at 10 meters above ground.</p>
+                            </TooltipContent>
+                        </Tooltip>
 
-                    <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40">
-                        <Eye className="h-6 w-6 text-sky-600 dark:text-sky-400" />
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Visibility</p>
-                        <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.visibility} km</p>
-                    </div>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40 cursor-help hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
+                                    <Eye className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">Visibility</p>
+                                    <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.visibility} km</p>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Distance at which objects can be clearly seen.</p>
+                            </TooltipContent>
+                        </Tooltip>
 
-                    <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40">
-                        <Gauge className="h-6 w-6 text-sky-600 dark:text-sky-400" />
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Pressure</p>
-                        <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.pressure} hPa</p>
-                    </div>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40 cursor-help hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
+                                    <Gauge className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">Pressure</p>
+                                    <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.pressure} hPa</p>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Atmospheric pressure at sea level.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
 
                 {/* Sunrise/Sunset */}
