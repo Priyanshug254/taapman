@@ -1,15 +1,54 @@
-import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock } from "lucide-react"
+"use client"
+
+import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check } from "lucide-react"
+import { useState } from "react"
 import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { WeatherData } from "@/types/weather"
 import { WeatherIcon } from "@/components/weather-icon"
+import { toast } from "@/hooks/use-toast"
 
 interface WeatherCardProps {
     weather: WeatherData
 }
 
 export function WeatherCard({ weather }: WeatherCardProps) {
+    const [copied, setCopied] = useState(false)
+
+    const handleShare = async () => {
+        const text = `Current weather in ${weather.city}: ${weather.temp}°C, ${weather.condition}. Feels like ${weather.feelsLike}°C. Check it out on Taapman!`
+
+        try {
+            await navigator.clipboard.writeText(text)
+            setCopied(true)
+            toast({
+                title: "Copied to clipboard!",
+                description: "Weather summary is ready to share.",
+            })
+            setTimeout(() => setCopied(false), 2000)
+        } catch (err) {
+            toast({
+                title: "Failed to copy",
+                description: "Could not access clipboard.",
+                variant: "destructive",
+            })
+        }
+    }
+
     return (
-        <Card className="p-8 backdrop-blur-md bg-white/60 dark:bg-slate-900/60 border-white/20 dark:border-white/10 shadow-xl">
+        <Card className="p-8 backdrop-blur-md bg-white/60 dark:bg-slate-900/60 border-white/20 dark:border-white/10 shadow-xl relative group">
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleShare}
+                    className="hover:bg-white/20 dark:hover:bg-slate-800/20"
+                    title="Share Weather"
+                >
+                    {copied ? <Check className="h-5 w-5 text-green-500" /> : <Share2 className="h-5 w-5 text-slate-600 dark:text-slate-400" />}
+                </Button>
+            </div>
+
             <div className="text-center space-y-6">
                 <div>
                     <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
