@@ -3,6 +3,7 @@
 import { Sprout, CloudRain, Sun, Wind, ThermometerSnowflake } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { WeatherData } from "@/types/weather"
+import { WEATHER_THRESHOLDS } from "@/lib/constants"
 
 interface GardenGuruProps {
     weather: WeatherData
@@ -23,7 +24,7 @@ export function GardenGuru({ weather }: GardenGuruProps) {
                 color: "text-blue-500",
                 type: "Watering"
             })
-        } else if (temp > 25) {
+        } else if (temp > WEATHER_THRESHOLDS.TEMP.HOT) {
             advice.push({
                 icon: Sun,
                 text: "Water deeply in the evening.",
@@ -40,21 +41,21 @@ export function GardenGuru({ weather }: GardenGuruProps) {
         }
 
         // Protection Logic
-        if (temp < 5) {
+        if (temp < WEATHER_THRESHOLDS.TEMP.COLD) {
             advice.push({
                 icon: ThermometerSnowflake,
                 text: "Cover sensitive plants from frost.",
                 color: "text-cyan-500",
                 type: "Protection"
             })
-        } else if (windSpeed > 20) {
+        } else if (windSpeed > WEATHER_THRESHOLDS.WIND.MODERATE) {
             advice.push({
                 icon: Wind,
                 text: "Secure tall plants and climbers.",
                 color: "text-slate-500",
                 type: "Protection"
             })
-        } else if (temp > 10 && !isRaining && windSpeed < 15) {
+        } else if (temp > WEATHER_THRESHOLDS.TEMP.CHILLY && !isRaining && windSpeed < WEATHER_THRESHOLDS.WIND.LIGHT) {
             advice.push({
                 icon: Sprout,
                 text: "Great day for planting or pruning!",

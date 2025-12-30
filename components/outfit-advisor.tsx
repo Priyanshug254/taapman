@@ -2,6 +2,7 @@
 
 import { Shirt, Umbrella, Glasses, Snowflake, Wind } from "lucide-react"
 import { Card } from "@/components/ui/card"
+import { WEATHER_THRESHOLDS } from "@/lib/constants"
 
 import { WeatherData } from "@/types/weather"
 
@@ -17,20 +18,20 @@ export function OutfitAdvisor({ weather }: OutfitAdvisorProps) {
         const isSnowing = condition.toLowerCase().includes("snow")
 
         // Top wear
-        if (temp >= 25) suggestions.push({ icon: Shirt, text: "T-shirt / Light Top", color: "text-orange-500" })
-        else if (temp >= 15) suggestions.push({ icon: Shirt, text: "Long Sleeve / Hoodie", color: "text-blue-500" })
-        else if (temp >= 5) suggestions.push({ icon: Shirt, text: "Jacket / Sweater", color: "text-indigo-600" })
+        if (temp >= WEATHER_THRESHOLDS.TEMP.HOT) suggestions.push({ icon: Shirt, text: "T-shirt / Light Top", color: "text-orange-500" })
+        else if (temp >= WEATHER_THRESHOLDS.TEMP.MILD) suggestions.push({ icon: Shirt, text: "Long Sleeve / Hoodie", color: "text-blue-500" })
+        else if (temp >= WEATHER_THRESHOLDS.TEMP.COLD) suggestions.push({ icon: Shirt, text: "Jacket / Sweater", color: "text-indigo-600" })
         else suggestions.push({ icon: Snowflake, text: "Heavy Coat / Thermal", color: "text-cyan-600" })
 
         // Bottom wear
-        if (temp >= 25) suggestions.push({ icon: Shirt, text: "Shorts / Skirt", color: "text-orange-500" }) // Reusing Shirt icon as generic clothing for now if no specific pants icon
+        if (temp >= WEATHER_THRESHOLDS.TEMP.HOT) suggestions.push({ icon: Shirt, text: "Shorts / Skirt", color: "text-orange-500" }) // Reusing Shirt icon as generic clothing for now if no specific pants icon
         else suggestions.push({ icon: Shirt, text: "Jeans / Trousers", color: "text-slate-700" })
 
         // Accessories
         if (isRaining) suggestions.push({ icon: Umbrella, text: "Umbrella / Raincoat", color: "text-blue-600" })
         if (isSnowing) suggestions.push({ icon: Snowflake, text: "Snow Boots", color: "text-cyan-500" })
-        if (temp > 20 && !isRaining && !isSnowing) suggestions.push({ icon: Glasses, text: "Sunglasses", color: "text-amber-600" })
-        if (windSpeed > 20) suggestions.push({ icon: Wind, text: "Windbreaker", color: "text-slate-500" })
+        if (temp > WEATHER_THRESHOLDS.TEMP.WARM && !isRaining && !isSnowing) suggestions.push({ icon: Glasses, text: "Sunglasses", color: "text-amber-600" })
+        if (windSpeed > WEATHER_THRESHOLDS.WIND.MODERATE) suggestions.push({ icon: Wind, text: "Windbreaker", color: "text-slate-500" })
 
         return suggestions
     }
