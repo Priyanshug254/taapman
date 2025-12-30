@@ -17,6 +17,7 @@ export interface WeatherData {
     pressure: number
     sunrise: string
     sunset: string
+    lastUpdated: string
     forecast: ForecastDay[]
     isDay: boolean
 }

@@ -1,4 +1,4 @@
-import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset } from "lucide-react"
+import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { WeatherData } from "@/types/weather"
 import { WeatherIcon } from "@/components/weather-icon"
@@ -15,6 +15,10 @@ export function WeatherCard({ weather }: WeatherCardProps) {
                     <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
                         {weather.city}{weather.country ? `, ${weather.country}` : ''}
                     </h3>
+                    <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 text-sm mt-1">
+                        <Clock className="h-3 w-3" />
+                        <span>Updated at {weather.lastUpdated}</span>
+                    </div>
                     <p className="text-slate-600 dark:text-slate-400 mt-2">{weather.condition}</p>
                 </div>
 

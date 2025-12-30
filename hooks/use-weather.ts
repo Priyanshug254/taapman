@@ -44,6 +44,7 @@ export function useWeather() {
                 pressure: Math.round(data.current.surface_pressure),
                 sunrise: new Date(data.daily.sunrise[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 sunset: new Date(data.daily.sunset[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 forecast: forecast,
                 isDay: data.current.is_day === 1
             })
