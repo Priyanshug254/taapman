@@ -9,6 +9,7 @@ import { OutfitAdvisor } from "@/components/outfit-advisor"
 import { ActivityPlanner } from "@/components/activity-planner"
 import { GardenGuru } from "@/components/garden-guru"
 import { WeatherCard } from "@/components/weather-card"
+import { WeatherSkeleton } from "@/components/weather-skeleton"
 import { WeatherIcon } from "@/components/weather-icon"
 import { WeatherBackground } from "@/components/weather-background"
 import { useWeather } from "@/hooks/use-weather"
@@ -94,7 +95,11 @@ export default function Home() {
         </div>
 
         {/* Weather Data */}
-        {weather && (
+        {loading ? (
+          <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <WeatherSkeleton />
+          </div>
+        ) : weather && (
           <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
             <WeatherCard weather={weather} />
