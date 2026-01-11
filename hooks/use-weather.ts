@@ -14,7 +14,7 @@ export function useWeather() {
     const fetchWeatherData = async (lat: number, lon: number, cityName: string, countryCode?: string) => {
         try {
             const response = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto`
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=auto`
             )
 
             if (!response.ok) throw new Error("Failed to fetch weather data")
@@ -28,7 +28,8 @@ export function useWeather() {
                     day: days[date.getDay()],
                     condition: mapWeatherCode(data.daily.weather_code[index]),
                     minTemp: Math.round(data.daily.temperature_2m_min[index]),
-                    maxTemp: Math.round(data.daily.temperature_2m_max[index])
+                    maxTemp: Math.round(data.daily.temperature_2m_max[index]),
+                    rainProb: data.daily.precipitation_probability_max[index] || 0
                 }
             })
 

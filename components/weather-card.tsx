@@ -162,6 +162,32 @@ export function WeatherCard({ weather }: WeatherCardProps) {
                         </div>
                     </div>
                 </div>
+
+                {/* Forecast List */}
+                <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <h4 className="font-semibold text-slate-900 dark:text-white text-left">5-Day Forecast</h4>
+                    {weather.forecast.map((day, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
+                            <div className="flex items-center gap-4">
+                                <span className="w-12 font-medium text-slate-900 dark:text-white">{day.day}</span>
+                                <div className="flex items-center gap-2">
+                                    <WeatherIcon condition={day.condition} className="h-6 w-6" />
+                                    <span className="text-sm text-slate-600 dark:text-slate-400 hidden sm:inline-block w-24">{day.condition}</span>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="font-semibold text-slate-900 dark:text-white">
+                                    {day.maxTemp}° <span className="text-slate-500 dark:text-slate-400 text-sm">/ {day.minTemp}°</span>
+                                </p>
+                                {day.rainProb > 0 && (
+                                    <p className="text-xs text-sky-600 dark:text-sky-400 flex items-center justify-end gap-1">
+                                        <Droplets className="h-3 w-3" /> {day.rainProb}%
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </Card>
     )

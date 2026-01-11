@@ -3,6 +3,7 @@ export interface ForecastDay {
     condition: string
     minTemp: number
     maxTemp: number
+    rainProb: number
 }
 
 export interface WeatherData {
