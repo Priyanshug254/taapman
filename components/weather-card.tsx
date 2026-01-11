@@ -97,7 +97,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
                                 <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40 cursor-help hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
                                     <Wind className="h-6 w-6 text-sky-600 dark:text-sky-400" />
                                     <p className="text-sm text-slate-600 dark:text-slate-400">Wind Speed</p>
-                                    <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.windSpeed} km/h</p>
+                                    <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.windSpeed} km/h {weather.windDirection}</p>
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent>

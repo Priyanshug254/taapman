@@ -13,6 +13,7 @@ export interface WeatherData {
     condition: string
     humidity: number
     windSpeed: number
+    windDirection: string
     visibility: number
     pressure: number
     uvIndex: number

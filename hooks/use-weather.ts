@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { WeatherData } from "@/types/weather"
-import { mapWeatherCode } from "@/lib/weather-utils"
+import { mapWeatherCode, getWindDirection } from "@/lib/weather-utils"
 
 export function useWeather() {
     const [location, setLocation] = useState("")
@@ -14,7 +14,7 @@ export function useWeather() {
     const fetchWeatherData = async (lat: number, lon: number, cityName: string, countryCode?: string) => {
         try {
             const response = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto`
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto`
             )
 
             if (!response.ok) throw new Error("Failed to fetch weather data")
@@ -40,6 +40,7 @@ export function useWeather() {
                 condition: mapWeatherCode(data.current.weather_code),
                 humidity: data.current.relative_humidity_2m,
                 windSpeed: Math.round(data.current.wind_speed_10m),
+                windDirection: getWindDirection(data.current.wind_direction_10m),
                 visibility: 10,
                 pressure: Math.round(data.current.surface_pressure),
                 uvIndex: Math.round(data.daily.uv_index_max[0]),
