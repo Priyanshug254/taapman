@@ -14,7 +14,7 @@ export function useWeather() {
     const fetchWeatherData = async (lat: number, lon: number, cityName: string, countryCode?: string) => {
         try {
             const response = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto`
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto`
             )
 
             if (!response.ok) throw new Error("Failed to fetch weather data")
@@ -42,6 +42,7 @@ export function useWeather() {
                 windSpeed: Math.round(data.current.wind_speed_10m),
                 visibility: 10,
                 pressure: Math.round(data.current.surface_pressure),
+                uvIndex: Math.round(data.daily.uv_index_max[0]),
                 sunrise: new Date(data.daily.sunrise[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 sunset: new Date(data.daily.sunset[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),

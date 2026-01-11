@@ -1,6 +1,6 @@
 "use client"
 
-import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check } from "lucide-react"
+import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check, Sun } from "lucide-react"
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -128,6 +128,18 @@ export function WeatherCard({ weather }: WeatherCardProps) {
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Atmospheric pressure at sea level.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-white/40 dark:bg-slate-800/40 cursor-help hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors">
+                                    <Sun className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">UV Index</p>
+                                    <p className="text-xl font-semibold text-slate-900 dark:text-white">{weather.uvIndex}</p>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Max UV Index for the day (0-11+).</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>

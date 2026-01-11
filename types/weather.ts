@@ -15,6 +15,7 @@ export interface WeatherData {
     windSpeed: number
     visibility: number
     pressure: number
+    uvIndex: number
     sunrise: string
     sunset: string
     lastUpdated: string
