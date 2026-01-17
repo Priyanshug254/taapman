@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { OutfitAdvisor } from "@/components/outfit-advisor"
 import { ActivityPlanner } from "@/components/activity-planner"
 import { GardenGuru } from "@/components/garden-guru"
+import { AirQualityCard } from "@/components/air-quality-card"
 import { WeatherCard } from "@/components/weather-card"
 import { WeatherSkeleton } from "@/components/weather-skeleton"
 import { WeatherIcon } from "@/components/weather-icon"
@@ -105,10 +106,11 @@ export default function Home() {
             <WeatherCard weather={weather} />
 
             {/* Smart Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <OutfitAdvisor weather={weather} />
               <ActivityPlanner weather={weather} />
               <GardenGuru weather={weather} />
+              <AirQualityCard weather={weather} />
             </div>
 
             {/* 5-Day Forecast */}

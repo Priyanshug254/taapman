@@ -23,4 +23,5 @@ export interface WeatherData {
     lastUpdated: string
     forecast: ForecastDay[]
     isDay: boolean
+    aqi?: number
 }

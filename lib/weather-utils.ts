@@ -15,3 +15,12 @@ export function getWindDirection(degrees: number): string {
     const index = Math.round(((degrees %= 360) < 0 ? degrees + 360 : degrees) / 45) % 8
     return directions[index]
 }
+
+export function getAQIStatus(aqi: number) {
+    if (aqi <= 20) return { status: "Good", color: "text-emerald-500", bgColor: "bg-emerald-500/10" }
+    if (aqi <= 40) return { status: "Fair", color: "text-sky-500", bgColor: "bg-sky-500/10" }
+    if (aqi <= 60) return { status: "Moderate", color: "text-yellow-500", bgColor: "bg-yellow-500/10" }
+    if (aqi <= 80) return { status: "Poor", color: "text-orange-500", bgColor: "bg-orange-500/10" }
+    return { status: "Very Poor", color: "text-red-500", bgColor: "bg-red-500/10" }
+}
+

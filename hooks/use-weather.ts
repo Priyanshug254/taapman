@@ -13,43 +13,46 @@ export function useWeather() {
 
     const fetchWeatherData = async (lat: number, lon: number, cityName: string, countryCode?: string) => {
         try {
-            const response = await fetch(
-                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=auto`
-            )
+            const [weatherRes, aqiRes] = await Promise.all([
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=auto`),
+                fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi`)
+            ])
 
-            if (!response.ok) throw new Error("Failed to fetch weather data")
+            if (!weatherRes.ok) throw new Error("Failed to fetch weather data")
 
-            const data = await response.json()
+            const weatherData = await weatherRes.json()
+            const aqiData = aqiRes.ok ? await aqiRes.json() : null
 
             const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-            const forecast = data.daily.time.slice(0, 5).map((dateStr: string, index: number) => {
+            const forecast = weatherData.daily.time.slice(0, 5).map((dateStr: string, index: number) => {
                 const date = new Date(dateStr)
                 return {
                     day: days[date.getDay()],
-                    condition: mapWeatherCode(data.daily.weather_code[index]),
-                    minTemp: Math.round(data.daily.temperature_2m_min[index]),
-                    maxTemp: Math.round(data.daily.temperature_2m_max[index]),
-                    rainProb: data.daily.precipitation_probability_max[index] || 0
+                    condition: mapWeatherCode(weatherData.daily.weather_code[index]),
+                    minTemp: Math.round(weatherData.daily.temperature_2m_min[index]),
+                    maxTemp: Math.round(weatherData.daily.temperature_2m_max[index]),
+                    rainProb: weatherData.daily.precipitation_probability_max[index] || 0
                 }
             })
 
             setWeather({
                 city: cityName,
                 country: countryCode || "",
-                temp: Math.round(data.current.temperature_2m),
-                feelsLike: Math.round(data.current.apparent_temperature),
-                condition: mapWeatherCode(data.current.weather_code),
-                humidity: data.current.relative_humidity_2m,
-                windSpeed: Math.round(data.current.wind_speed_10m),
-                windDirection: getWindDirection(data.current.wind_direction_10m),
+                temp: Math.round(weatherData.current.temperature_2m),
+                feelsLike: Math.round(weatherData.current.apparent_temperature),
+                condition: mapWeatherCode(weatherData.current.weather_code),
+                humidity: weatherData.current.relative_humidity_2m,
+                windSpeed: Math.round(weatherData.current.wind_speed_10m),
+                windDirection: getWindDirection(weatherData.current.wind_direction_10m),
                 visibility: 10,
-                pressure: Math.round(data.current.surface_pressure),
-                uvIndex: Math.round(data.daily.uv_index_max[0]),
-                sunrise: new Date(data.daily.sunrise[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                sunset: new Date(data.daily.sunset[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                pressure: Math.round(weatherData.current.surface_pressure),
+                uvIndex: Math.round(weatherData.daily.uv_index_max[0]),
+                sunrise: new Date(weatherData.daily.sunrise[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                sunset: new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 forecast: forecast,
-                isDay: data.current.is_day === 1
+                isDay: weatherData.current.is_day === 1,
+                aqi: aqiData?.current?.european_aqi
             })
 
         } catch (error) {
