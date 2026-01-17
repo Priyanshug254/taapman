@@ -1,7 +1,7 @@
 "use client"
 
-import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check, Sun } from "lucide-react"
-import { useState } from "react"
+import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check, Sun, Volume2, VolumeX } from "lucide-react"
+import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +20,41 @@ interface WeatherCardProps {
 
 export function WeatherCard({ weather }: WeatherCardProps) {
     const [copied, setCopied] = useState(false)
+    const [isSpeaking, setIsSpeaking] = useState(false)
+
+    useEffect(() => {
+        return () => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel()
+            }
+        }
+    }, [])
+
+    const handleSpeak = () => {
+        if (!('speechSynthesis' in window)) {
+            toast({
+                title: "Not supported",
+                description: "Your browser doesn't support text-to-speech.",
+                variant: "destructive",
+            })
+            return
+        }
+
+        if (isSpeaking) {
+            window.speechSynthesis.cancel()
+            setIsSpeaking(false)
+            return
+        }
+
+        const text = `Current weather in ${weather.city} is ${weather.temp} degrees Celsius and ${weather.condition}. It feels like ${weather.feelsLike} degrees. The humidity is ${weather.humidity} percent and wind speed is ${weather.windSpeed} kilometers per hour ${weather.windDirection}.`
+
+        const utterance = new SpeechSynthesisUtterance(text)
+        utterance.onstart = () => setIsSpeaking(true)
+        utterance.onend = () => setIsSpeaking(false)
+        utterance.onerror = () => setIsSpeaking(false)
+
+        window.speechSynthesis.speak(utterance)
+    }
 
     const handleShare = async () => {
         const text = `Current weather in ${weather.city}: ${weather.temp}°C, ${weather.condition}. Feels like ${weather.feelsLike}°C. Check it out on Taapman!`
@@ -43,15 +78,24 @@ export function WeatherCard({ weather }: WeatherCardProps) {
 
     return (
         <Card className="p-8 backdrop-blur-md bg-white/60 dark:bg-slate-900/60 border-white/20 dark:border-white/10 shadow-xl relative group">
-            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleSpeak}
+                    className={`${isSpeaking ? 'text-sky-600 dark:text-sky-400' : 'text-slate-600 dark:text-slate-400'} hover:bg-white/20 dark:hover:bg-slate-800/20`}
+                    title={isSpeaking ? "Stop Listening" : "Listen to Weather"}
+                >
+                    {isSpeaking ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                </Button>
                 <Button
                     variant="ghost"
                     size="icon"
                     onClick={handleShare}
-                    className="hover:bg-white/20 dark:hover:bg-slate-800/20"
+                    className="hover:bg-white/20 dark:hover:bg-slate-800/20 text-slate-600 dark:text-slate-400"
                     title="Share Weather"
                 >
-                    {copied ? <Check className="h-5 w-5 text-green-500" /> : <Share2 className="h-5 w-5 text-slate-600 dark:text-slate-400" />}
+                    {copied ? <Check className="h-5 w-5 text-green-500" /> : <Share2 className="h-5 w-5" />}
                 </Button>
             </div>
 
