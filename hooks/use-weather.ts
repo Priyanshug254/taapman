@@ -9,12 +9,20 @@ export function useWeather() {
     const [location, setLocation] = useState("")
     const [weather, setWeather] = useState<WeatherData | null>(null)
     const [loading, setLoading] = useState(false)
+    const [unit, setUnit] = useState<'C' | 'F'>('C')
     const { toast } = useToast()
+
+    const toggleUnit = () => setUnit(prev => prev === 'C' ? 'F' : 'C')
+
+    const convertTemp = (temp: number) => {
+        if (unit === 'C') return temp
+        return Math.round((temp * 9 / 5) + 32)
+    }
 
     const fetchWeatherData = async (lat: number, lon: number, cityName: string, countryCode?: string) => {
         try {
             const [weatherRes, aqiRes] = await Promise.all([
-                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=auto`),
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=auto`),
                 fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi`)
             ])
 
@@ -22,6 +30,15 @@ export function useWeather() {
 
             const weatherData = await weatherRes.json()
             const aqiData = aqiRes.ok ? await aqiRes.json() : null
+
+            const currentHour = new Date().getHours()
+            const hourly = weatherData.hourly.time
+                .slice(currentHour, currentHour + 24)
+                .map((time: string, index: number) => ({
+                    time: new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    temp: Math.round(weatherData.hourly.temperature_2m[currentHour + index]),
+                    icon: mapWeatherCode(weatherData.hourly.weather_code[currentHour + index])
+                }))
 
             const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
             const forecast = weatherData.daily.time.slice(0, 5).map((dateStr: string, index: number) => {
@@ -51,6 +68,7 @@ export function useWeather() {
                 sunset: new Date(weatherData.daily.sunset[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 lastUpdated: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 forecast: forecast,
+                hourly: hourly,
                 isDay: weatherData.current.is_day === 1,
                 aqi: aqiData?.current?.european_aqi
             })
@@ -66,8 +84,9 @@ export function useWeather() {
         }
     }
 
-    const handleSearch = async () => {
-        if (!location.trim()) {
+    const handleSearch = async (query?: string) => {
+        const searchLocation = query || location
+        if (!searchLocation.trim()) {
             toast({
                 title: "Error",
                 description: "Please enter a city name",
@@ -76,10 +95,12 @@ export function useWeather() {
             return
         }
 
+        if (query) setLocation(query)
+
         setLoading(true)
         try {
             const geoResponse = await fetch(
-                `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`
+                `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchLocation)}&count=1&language=en&format=json`
             )
             const geoData = await geoResponse.json()
 
@@ -160,6 +181,9 @@ export function useWeather() {
         weather,
         loading,
         handleSearch,
-        handleUseLocation
+        handleUseLocation,
+        unit,
+        toggleUnit,
+        convertTemp
     }
 }

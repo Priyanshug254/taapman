@@ -1,6 +1,6 @@
 "use client"
 
-import { Cloud, MapPin, Search, Loader2 } from "lucide-react"
+import { Cloud, MapPin, Search, Loader2, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -10,17 +10,23 @@ import { ActivityPlanner } from "@/components/activity-planner"
 import { GardenGuru } from "@/components/garden-guru"
 import { AirQualityCard } from "@/components/air-quality-card"
 import { WeatherCard } from "@/components/weather-card"
+import { HourlyForecast } from "@/components/hourly-forecast"
 import { WeatherSkeleton } from "@/components/weather-skeleton"
 import { WeatherIcon } from "@/components/weather-icon"
 import { WeatherBackground } from "@/components/weather-background"
+import { WeatherAnimations } from "@/components/weather-animations"
+import { WeatherAlert } from "@/components/weather-alert"
 import { useWeather } from "@/hooks/use-weather"
+import { useFavorites } from "@/hooks/use-favorites"
 
 export default function Home() {
-  const { location, setLocation, weather, loading, handleSearch, handleUseLocation } = useWeather()
+  const { location, setLocation, weather, loading, handleSearch, handleUseLocation, unit, toggleUnit, convertTemp } = useWeather()
+  const { favorites, toggleFavorite, isFavorite } = useFavorites()
 
   return (
     <div className="min-h-screen transition-colors duration-500 relative">
       <WeatherBackground weather={weather} />
+      <WeatherAnimations weather={weather} />
 
       {/* Header */}
       <header className="border-b border-white/20 dark:border-white/10 backdrop-blur-sm bg-white/30 dark:bg-black/20">
@@ -33,6 +39,14 @@ export default function Home() {
             <a href="#" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">Home</a>
             <a href="#" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">Forecast</a>
             <a href="#" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">About</a>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleUnit}
+              className="w-9 px-0 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400"
+            >
+              °{unit}
+            </Button>
             <ThemeToggle />
           </nav>
           <div className="md:hidden">
@@ -67,7 +81,7 @@ export default function Home() {
                 />
               </div>
               <Button
-                onClick={handleSearch}
+                onClick={() => handleSearch()}
                 disabled={loading}
                 className="h-12 px-6 bg-sky-600 hover:bg-sky-700 text-white"
               >
@@ -92,52 +106,84 @@ export default function Home() {
                 Use My Location
               </Button>
             </div>
+
+            {/* Favorites List */}
+            {favorites.length > 0 && (
+              <div className="mt-6 flex flex-wrap gap-2 justify-center">
+                {favorites.map((city) => (
+                  <Button
+                    key={city}
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleSearch(city)}
+                    className="bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors"
+                  >
+                    <Star className="h-3 w-3 mr-1 text-yellow-500 fill-yellow-500" />
+                    {city}
+                  </Button>
+                ))}
+              </div>
+            )}
           </Card>
         </div>
 
         {/* Weather Data */}
         {loading ? (
-          <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="flex flex-col items-center justify-center min-h-[400px]">
             <WeatherSkeleton />
           </div>
         ) : weather && (
-          <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <>
+            <WeatherAlert weather={weather} />
+            <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
-            <WeatherCard weather={weather} />
+              <WeatherCard
+                weather={weather}
+                isFavorite={isFavorite(weather.city)}
+                toggleFavorite={() => toggleFavorite(weather.city)}
+                unit={unit}
+                convertTemp={convertTemp}
+              />
+              <HourlyForecast
+                weather={weather}
+                unit={unit}
+                convertTemp={convertTemp}
+              />
 
-            {/* Smart Features Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <OutfitAdvisor weather={weather} />
-              <ActivityPlanner weather={weather} />
-              <GardenGuru weather={weather} />
-              <AirQualityCard weather={weather} />
-            </div>
+              {/* Smart Features Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <OutfitAdvisor weather={weather} />
+                <ActivityPlanner weather={weather} />
+                <GardenGuru weather={weather} />
+                <AirQualityCard weather={weather} />
+              </div>
 
-            {/* 5-Day Forecast */}
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 text-center">5-Day Forecast</h3>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {weather.forecast.map((day, index) => (
-                  <Card
-                    key={index}
-                    className="p-6 backdrop-blur-md bg-white/60 dark:bg-slate-900/60 border-white/20 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <div className="flex flex-col items-center gap-3">
-                      <p className="font-semibold text-slate-900 dark:text-white">{day.day}</p>
-                      <div className="text-sky-600 dark:text-sky-400">
-                        <WeatherIcon condition={day.condition} className="h-10 w-10" />
+              {/* 5-Day Forecast */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 text-center">5-Day Forecast</h3>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {weather.forecast.map((day, index) => (
+                    <Card
+                      key={index}
+                      className="p-6 backdrop-blur-md bg-white/60 dark:bg-slate-900/60 border-white/20 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <div className="flex flex-col items-center gap-3">
+                        <p className="font-semibold text-slate-900 dark:text-white">{day.day}</p>
+                        <div className="text-sky-600 dark:text-sky-400">
+                          <WeatherIcon condition={day.condition} className="h-10 w-10" />
+                        </div>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">{day.condition}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-bold text-slate-900 dark:text-white">{convertTemp(day.maxTemp)}°{unit}</span>
+                          <span className="text-sm text-slate-500 dark:text-slate-400">{convertTemp(day.minTemp)}°{unit}</span>
+                        </div>
                       </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">{day.condition}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-slate-900 dark:text-white">{day.maxTemp}°</span>
-                        <span className="text-sm text-slate-500 dark:text-slate-400">{day.minTemp}°</span>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
 
         {/* Empty State */}
@@ -169,6 +215,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </div>
+    </div >
   )
 }

@@ -6,6 +6,12 @@ export interface ForecastDay {
     rainProb: number
 }
 
+export interface HourlyForecast {
+    time: string
+    temp: number
+    icon: string
+}
+
 export interface WeatherData {
     city: string
     country: string
@@ -22,6 +28,7 @@ export interface WeatherData {
     sunset: string
     lastUpdated: string
     forecast: ForecastDay[]
+    hourly: HourlyForecast[]
     isDay: boolean
     aqi?: number
 }

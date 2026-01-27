@@ -7,9 +7,11 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 interface HourlyForecastProps {
     weather: WeatherData
+    unit: 'C' | 'F'
+    convertTemp: (temp: number) => number
 }
 
-export function HourlyForecast({ weather }: HourlyForecastProps) {
+export function HourlyForecast({ weather, unit, convertTemp }: HourlyForecastProps) {
     if (!weather.hourly || weather.hourly.length === 0) return null
 
     return (
@@ -26,7 +28,7 @@ export function HourlyForecast({ weather }: HourlyForecastProps) {
                                 <WeatherIcon condition={hour.icon} className="h-8 w-8" />
                             </div>
                             <span className="text-lg font-bold text-slate-900 dark:text-white">
-                                {hour.temp}°
+                                {convertTemp(hour.temp)}°{unit}
                             </span>
                         </div>
                     ))}
