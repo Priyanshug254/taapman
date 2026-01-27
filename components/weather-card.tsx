@@ -1,6 +1,6 @@
 "use client"
 
-import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check, Sun, Volume2, VolumeX } from "lucide-react"
+import { Droplets, Wind, Eye, Gauge, Sunrise, Sunset, Clock, Share2, Check, Sun, Volume2, VolumeX, Star } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,9 +16,13 @@ import { toast } from "@/hooks/use-toast"
 
 interface WeatherCardProps {
     weather: WeatherData
+    isFavorite: boolean
+    toggleFavorite: () => void
+    unit: 'C' | 'F'
+    convertTemp: (temp: number) => number
 }
 
-export function WeatherCard({ weather }: WeatherCardProps) {
+export function WeatherCard({ weather, isFavorite, toggleFavorite, unit, convertTemp }: WeatherCardProps) {
     const [copied, setCopied] = useState(false)
     const [isSpeaking, setIsSpeaking] = useState(false)
 
@@ -46,7 +50,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
             return
         }
 
-        const text = `Current weather in ${weather.city} is ${weather.temp} degrees Celsius and ${weather.condition}. It feels like ${weather.feelsLike} degrees. The humidity is ${weather.humidity} percent and wind speed is ${weather.windSpeed} kilometers per hour ${weather.windDirection}.`
+        const text = `Current weather in ${weather.city} is ${convertTemp(weather.temp)} degrees ${unit === 'C' ? 'Celsius' : 'Fahrenheit'} and ${weather.condition}. It feels like ${convertTemp(weather.feelsLike)} degrees. The humidity is ${weather.humidity} percent and wind speed is ${weather.windSpeed} kilometers per hour ${weather.windDirection}.`
 
         const utterance = new SpeechSynthesisUtterance(text)
         utterance.onstart = () => setIsSpeaking(true)
@@ -57,7 +61,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
     }
 
     const handleShare = async () => {
-        const text = `Current weather in ${weather.city}: ${weather.temp}°C, ${weather.condition}. Feels like ${weather.feelsLike}°C. Check it out on Taapman!`
+        const text = `Current weather in ${weather.city}: ${convertTemp(weather.temp)}°${unit}, ${weather.condition}. Feels like ${convertTemp(weather.feelsLike)}°${unit}. Check it out on Taapman!`
 
         try {
             await navigator.clipboard.writeText(text)
@@ -101,9 +105,20 @@ export function WeatherCard({ weather }: WeatherCardProps) {
 
             <div className="text-center space-y-6">
                 <div>
-                    <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
-                        {weather.city}{weather.country ? `, ${weather.country}` : ''}
-                    </h3>
+                    <div className="flex items-center justify-center gap-2">
+                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white">
+                            {weather.city}{weather.country ? `, ${weather.country}` : ''}
+                        </h3>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => toggleFavorite()}
+                            className="h-8 w-8 hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
+                            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                        >
+                            <Star className={`h-5 w-5 ${isFavorite ? "text-yellow-500 fill-yellow-500" : "text-slate-400"}`} />
+                        </Button>
+                    </div>
                     <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 text-sm mt-1">
                         <Clock className="h-3 w-3" />
                         <span>Updated at {weather.lastUpdated}</span>
@@ -115,10 +130,10 @@ export function WeatherCard({ weather }: WeatherCardProps) {
                     <div className="text-sky-600 dark:text-sky-400">
                         <WeatherIcon condition={weather.condition} className="h-16 w-16" />
                     </div>
-                    <div className="text-7xl font-bold text-slate-900 dark:text-white">{weather.temp}°C</div>
+                    <div className="text-7xl font-bold text-slate-900 dark:text-white">{convertTemp(weather.temp)}°{unit}</div>
                 </div>
 
-                <p className="text-slate-600 dark:text-slate-400">Feels like {weather.feelsLike}°C</p>
+                <p className="text-slate-600 dark:text-slate-400">Feels like {convertTemp(weather.feelsLike)}°{unit}</p>
 
                 {/* Weather Details Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-200 dark:border-slate-700">
@@ -221,7 +236,7 @@ export function WeatherCard({ weather }: WeatherCardProps) {
                             </div>
                             <div className="text-right">
                                 <p className="font-semibold text-slate-900 dark:text-white">
-                                    {day.maxTemp}° <span className="text-slate-500 dark:text-slate-400 text-sm">/ {day.minTemp}°</span>
+                                    {convertTemp(day.maxTemp)}° <span className="text-slate-500 dark:text-slate-400 text-sm">/ {convertTemp(day.minTemp)}°</span>
                                 </p>
                                 {day.rainProb > 0 && (
                                     <p className="text-xs text-sky-600 dark:text-sky-400 flex items-center justify-end gap-1">
