@@ -17,6 +17,7 @@ import { WeatherBackground } from "@/components/weather-background"
 import { WeatherAnimations } from "@/components/weather-animations"
 import { WeatherAlert } from "@/components/weather-alert"
 import { SolarTracker } from "@/components/solar-tracker"
+import { WeatherTrivia } from "@/components/weather-trivia"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 
@@ -158,6 +159,7 @@ export default function Home() {
                 <GardenGuru weather={weather} />
                 <AirQualityCard weather={weather} />
                 <SolarTracker weather={weather} />
+                <WeatherTrivia weather={weather} />
               </div>
 
               {/* 5-Day Forecast */}
