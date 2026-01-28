@@ -18,6 +18,7 @@ import { WeatherAnimations } from "@/components/weather-animations"
 import { WeatherAlert } from "@/components/weather-alert"
 import { SolarTracker } from "@/components/solar-tracker"
 import { WeatherTrivia } from "@/components/weather-trivia"
+import { WeatherTrends } from "@/components/weather-trends"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 
@@ -154,6 +155,7 @@ export default function Home() {
 
               {/* Smart Features Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <WeatherTrends weather={weather} />
                 <OutfitAdvisor weather={weather} />
                 <ActivityPlanner weather={weather} />
                 <GardenGuru weather={weather} />
