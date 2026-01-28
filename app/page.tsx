@@ -1,4 +1,6 @@
-"use client"
+use client
+
+import { useEffect } from "react"
 
 import { Cloud, MapPin, Search, Loader2, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -20,12 +22,22 @@ import { SolarTracker } from "@/components/solar-tracker"
 import { WeatherTrivia } from "@/components/weather-trivia"
 import { WeatherTrends } from "@/components/weather-trends"
 import { CityComparison } from "@/components/city-comparison"
+import { WeatherHistory } from "@/components/weather-history"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
+import { useWeatherHistory } from "@/hooks/use-weather-history"
 
 export default function Home() {
   const { location, setLocation, weather, loading, handleSearch, handleUseLocation, unit, toggleUnit, convertTemp } = useWeather()
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
+  const { history, addToHistory, clearHistory } = useWeatherHistory()
+
+  // Track weather history
+  useEffect(() => {
+    if (weather) {
+      addToHistory(weather.city, weather.temp, weather.condition)
+    }
+  }, [weather?.city])
 
   return (
     <div className="min-h-screen transition-colors duration-500 relative">
@@ -164,6 +176,11 @@ export default function Home() {
                 <AirQualityCard weather={weather} />
                 <SolarTracker weather={weather} />
                 <WeatherTrivia weather={weather} />
+                <WeatherHistory
+                  history={history}
+                  onClear={clearHistory}
+                  onCityClick={(city) => handleSearch(city)}
+                />
               </div>
 
               {/* 5-Day Forecast */}
