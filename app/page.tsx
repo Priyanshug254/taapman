@@ -25,6 +25,7 @@ import { CityComparison } from "@/components/city-comparison"
 import { WeatherHistory } from "@/components/weather-history"
 import { WeatherMap } from "@/components/weather-map"
 import { WeatherTimeMachine } from "@/components/weather-time-machine"
+import { WeatherTicker } from "@/components/weather-ticker"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -49,9 +50,10 @@ export default function Home() {
   }, [weather?.city])
 
   return (
-    <div className="min-h-screen transition-colors duration-500 relative">
+    <div className="min-h-screen transition-colors duration-500 relative flex flex-col">
       <WeatherBackground weather={weather} />
       <WeatherAnimations weather={weather} />
+      <WeatherTicker />
 
       {/* Header */}
       <header className="border-b border-white/20 dark:border-white/10 backdrop-blur-sm bg-white/30 dark:bg-black/20">
