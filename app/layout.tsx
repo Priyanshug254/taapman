@@ -10,7 +10,10 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Taapman - Smart Weather Forecasting",
-  description: "Get accurate, real-time weather information for any location worldwide",
+  description: "Next.js 16 Weather App with AI Insights",
+  manifest: "/manifest.json",
+  themeColor: "#0f172a",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
   generator: "v0.app",
   icons: {
     icon: [
