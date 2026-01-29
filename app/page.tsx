@@ -27,11 +27,18 @@ import { WeatherMap } from "@/components/weather-map"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
+import { useVoiceControl } from "@/hooks/use-voice-control"
+import { Mic } from "lucide-react"
 
 export default function Home() {
   const { location, setLocation, weather, loading, handleSearch, handleUseLocation, unit, toggleUnit, convertTemp } = useWeather()
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
   const { history, addToHistory, clearHistory } = useWeatherHistory()
+
+  const { isListening, startListening } = useVoiceControl((transcript) => {
+    setLocation(transcript)
+    handleSearch(transcript)
+  })
 
   // Track weather history
   useEffect(() => {
@@ -96,6 +103,14 @@ export default function Home() {
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   className="pl-10 h-12 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
                 />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 hover:bg-transparent ${isListening ? 'text-red-500 animate-pulse' : 'text-slate-400'}`}
+                  onClick={startListening}
+                >
+                  <Mic className="h-5 w-5" />
+                </Button>
               </div>
               <Button
                 onClick={() => handleSearch()}
