@@ -24,6 +24,7 @@ import { WeatherTrends } from "@/components/weather-trends"
 import { CityComparison } from "@/components/city-comparison"
 import { WeatherHistory } from "@/components/weather-history"
 import { WeatherMap } from "@/components/weather-map"
+import { WeatherTimeMachine } from "@/components/weather-time-machine"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -190,6 +191,7 @@ export default function Home() {
                 <OutfitAdvisor weather={weather} />
                 <ActivityPlanner weather={weather} />
                 <GardenGuru weather={weather} />
+                <WeatherTimeMachine weather={weather} />
                 <AirQualityCard weather={weather} />
                 <SolarTracker weather={weather} />
                 <WeatherTrivia weather={weather} />
