@@ -23,6 +23,7 @@ import { WeatherTrivia } from "@/components/weather-trivia"
 import { WeatherTrends } from "@/components/weather-trends"
 import { CityComparison } from "@/components/city-comparison"
 import { WeatherHistory } from "@/components/weather-history"
+import { WeatherMap } from "@/components/weather-map"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -170,6 +171,7 @@ export default function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <WeatherTrends weather={weather} />
                 <CityComparison />
+                <WeatherMap weather={weather} />
                 <OutfitAdvisor weather={weather} />
                 <ActivityPlanner weather={weather} />
                 <GardenGuru weather={weather} />
