@@ -27,6 +27,7 @@ import { WeatherMap } from "@/components/weather-map"
 import { WeatherTimeMachine } from "@/components/weather-time-machine"
 import { WeatherTicker } from "@/components/weather-ticker"
 import { AIInsightsPanel } from "@/components/ai-insights-panel"
+import { WeatherGlobe } from "@/components/weather-globe"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -191,6 +192,7 @@ export default function Home() {
                 <AIInsightsPanel weather={weather} />
                 <WeatherTrends weather={weather} />
                 <CityComparison />
+                <WeatherGlobe weather={weather} />
                 <WeatherMap weather={weather} />
                 <OutfitAdvisor weather={weather} />
                 <ActivityPlanner weather={weather} />
