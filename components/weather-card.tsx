@@ -13,6 +13,7 @@ import {
 import { WeatherData } from "@/types/weather"
 import { WeatherIcon } from "@/components/weather-icon"
 import { toast } from "@/hooks/use-toast"
+import html2canvas from "html2canvas"
 
 interface WeatherCardProps {
     weather: WeatherData
@@ -23,6 +24,31 @@ interface WeatherCardProps {
 }
 
 export function WeatherCard({ weather, isFavorite, toggleFavorite, unit, convertTemp }: WeatherCardProps) {
+    const [sharing, setSharing] = useState(false)
+
+    const handleShare = async () => {
+        setSharing(true)
+        try {
+            const shareElement = document.getElementById('weather-share-card')
+            if (shareElement) {
+                const canvas = await html2canvas(shareElement, { scale: 2, useCORS: true })
+                const image = canvas.toDataURL("image/png")
+
+                // Create a download link
+                const link = document.createElement('a')
+                link.href = image
+                link.download = `Taapman-${weather.city}.png`
+                link.click()
+
+                // Optional: Web Share API if supported and file sharing allowed
+                // (Browser support varies for sharing files directly from blob)
+            }
+        } catch (e) {
+            console.error("Share failed", e)
+        } finally {
+            setSharing(false)
+        }
+    }
     const [copied, setCopied] = useState(false)
     const [isSpeaking, setIsSpeaking] = useState(false)
 
@@ -60,7 +86,7 @@ export function WeatherCard({ weather, isFavorite, toggleFavorite, unit, convert
         window.speechSynthesis.speak(utterance)
     }
 
-    const handleShare = async () => {
+    const handleCopyText = async () => {
         const text = `Current weather in ${weather.city}: ${convertTemp(weather.temp)}°${unit}, ${weather.condition}. Feels like ${convertTemp(weather.feelsLike)}°${unit}. Check it out on Taapman!`
 
         try {
@@ -117,6 +143,16 @@ export function WeatherCard({ weather, isFavorite, toggleFavorite, unit, convert
                             title={isFavorite ? "Remove from favorites" : "Add to favorites"}
                         >
                             <Star className={`h-5 w-5 ${isFavorite ? "text-yellow-500 fill-yellow-500" : "text-slate-400"}`} />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleShare}
+                            disabled={sharing}
+                            className="h-8 w-8 hover:bg-sky-100 dark:hover:bg-sky-900/30"
+                            title="Share Weather Card"
+                        >
+                            <Share2 className={`h-5 w-5 text-slate-400 ${sharing ? 'animate-pulse text-sky-500' : ''}`} />
                         </Button>
                     </div>
                     <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 text-sm mt-1">
