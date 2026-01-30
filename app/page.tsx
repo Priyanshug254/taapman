@@ -26,6 +26,7 @@ import { WeatherHistory } from "@/components/weather-history"
 import { WeatherMap } from "@/components/weather-map"
 import { WeatherTimeMachine } from "@/components/weather-time-machine"
 import { WeatherTicker } from "@/components/weather-ticker"
+import { AIInsightsPanel } from "@/components/ai-insights-panel"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -187,6 +188,7 @@ export default function Home() {
 
               {/* Smart Features Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <AIInsightsPanel weather={weather} />
                 <WeatherTrends weather={weather} />
                 <CityComparison />
                 <WeatherMap weather={weather} />
