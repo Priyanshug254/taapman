@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
-import { Cloud, MapPin, Search, Loader2, Star } from "lucide-react"
+import { Cloud, MapPin, Search, Loader2, Star, Maximize2, Minimize2, Mic } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -34,12 +34,12 @@ import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
 import { useVoiceControl } from "@/hooks/use-voice-control"
-import { Mic } from "lucide-react"
 
 export default function Home() {
   const { location, setLocation, weather, loading, handleSearch, handleUseLocation, unit, toggleUnit, convertTemp } = useWeather()
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
   const { history, addToHistory, clearHistory } = useWeatherHistory()
+  const [isZenMode, setIsZenMode] = useState(false)
 
   const { isListening, startListening } = useVoiceControl((transcript) => {
     setLocation(transcript)
@@ -174,8 +174,25 @@ export default function Home() {
         ) : weather && (
           <>
             <WeatherAlert weather={weather} />
-            <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Zen Mode Toggle */}
+            {weather && (
+              <div className="absolute top-4 right-4 z-50">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsZenMode(!isZenMode)}
+                  className="rounded-full bg-white/10 backdrop-blur hover:bg-white/20 text-white"
+                  title={isZenMode ? "Exit Zen Mode" : "Enter Zen Mode"}
+                >
+                  {isZenMode ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+                </Button>
+              </div>
+            )}
 
+            {/* Main Content */}
+            <div className={`max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 transition-all ${isZenMode ? 'opacity-0 pointer-events-none h-0 overflow-hidden' : 'opacity-100'}`}>
+
+              {/* Main Weather Card */}
               <WeatherCard
                 weather={weather}
                 isFavorite={isFavorite(weather.city)}
@@ -236,6 +253,17 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* Zen Mode View */}
+            {isZenMode && weather && (
+              <div className="fixed inset-0 z-40 flex items-center justify-center pointer-events-none">
+                <div className="text-center text-white animate-in fade-in zoom-in duration-700">
+                  <div className="text-2xl font-light mb-2">{weather.city}</div>
+                  <div className="text-9xl font-bold tracking-tighter mb-4 drop-shadow-2xl">{Math.round(weather.temp)}°</div>
+                  <div className="text-3xl capitalize font-medium opacity-90">{weather.condition}</div>
+                </div>
+              </div>
+            )}
           </>
         )}
 
