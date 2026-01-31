@@ -30,6 +30,7 @@ import { AIInsightsPanel } from "@/components/ai-insights-panel"
 import { WeatherGlobe } from "@/components/weather-globe"
 import { WeatherShareCard } from "@/components/weather-share-card"
 import { WeatherSoundController } from "@/components/weather-sound-controller"
+import { SafetyGuideModal } from "@/components/safety-guide-modal"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -280,7 +281,12 @@ export default function Home() {
       <footer className="py-6 text-center text-slate-500 dark:text-slate-400 text-sm relative z-10 bg-white/20 dark:bg-black/20 backdrop-blur-md mt-20">
         <div className="container mx-auto px-4">
           <p>© 2026 Taapman Weather. Powered by Open-Meteo & Next.js 16.</p>
-          {weather && <WeatherSoundController weather={weather} />}
+          {weather && (
+            <>
+              <WeatherSoundController weather={weather} />
+              <SafetyGuideModal weather={weather} />
+            </>
+          )}
         </div>
       </footer>
     </div>
