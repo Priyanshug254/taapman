@@ -32,6 +32,7 @@ import { WeatherShareCard } from "@/components/weather-share-card"
 import { WeatherSoundController } from "@/components/weather-sound-controller"
 import { SafetyGuideModal } from "@/components/safety-guide-modal"
 import { UVTracker } from "@/components/uv-tracker"
+import { StargazingCard } from "@/components/stargazing-card"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -222,6 +223,7 @@ export default function Home() {
                 <WeatherTimeMachine weather={weather} />
                 <AirQualityCard weather={weather} />
                 <UVTracker weather={weather} />
+                <StargazingCard weather={weather} />
                 <SolarTracker weather={weather} />
                 <WeatherTrivia weather={weather} />
                 <WeatherHistory
