@@ -31,6 +31,7 @@ import { WeatherGlobe } from "@/components/weather-globe"
 import { WeatherShareCard } from "@/components/weather-share-card"
 import { WeatherSoundController } from "@/components/weather-sound-controller"
 import { SafetyGuideModal } from "@/components/safety-guide-modal"
+import { UVTracker } from "@/components/uv-tracker"
 import { useWeather } from "@/hooks/use-weather"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useWeatherHistory } from "@/hooks/use-weather-history"
@@ -220,6 +221,7 @@ export default function Home() {
                 <GardenGuru weather={weather} />
                 <WeatherTimeMachine weather={weather} />
                 <AirQualityCard weather={weather} />
+                <UVTracker weather={weather} />
                 <SolarTracker weather={weather} />
                 <WeatherTrivia weather={weather} />
                 <WeatherHistory
